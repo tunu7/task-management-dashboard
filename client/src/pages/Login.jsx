@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   Link,
   useNavigate,
@@ -7,128 +8,229 @@ import {
 import API from "../services/api";
 
 function Login() {
+
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] =
+    useState({
+      email: "",
+      password: "",
+    });
 
   const [loading, setLoading] =
     useState(false);
 
-  // Handle Input Change
   const handleChange = (e) => {
+
     setFormData((prev) => ({
       ...prev,
       [e.target.name]:
         e.target.value,
     }));
+
   };
 
-  // Handle Login
   const handleSubmit = async (e) => {
-  e.preventDefault();
 
-  setLoading(true);
+    e.preventDefault();
 
-  try {
+    setLoading(true);
 
-    const res = await API.post(
-      "/auth/login",
-      formData
-    );
+    try {
 
-    // Save Token
-    localStorage.setItem(
-      "token",
-      res.data.token
-    );
+      const res = await API.post(
+        "/auth/login",
+        formData
+      );
 
-    // Save User
-    localStorage.setItem(
-      "user",
-      JSON.stringify(res.data.user)
-    );
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
 
-    // Redirect
-    navigate("/dashboard");
+      localStorage.setItem(
+        "user",
+        JSON.stringify(res.data.user)
+      );
 
-  } catch (error) {
+      navigate("/dashboard");
 
-    console.log(
-      error.response?.data
-    );
+    } catch (error) {
 
-    alert("Invalid credentials");
+      console.log(
+        error.response?.data
+      );
 
-  } finally {
+      alert("Invalid credentials");
 
-    setLoading(false);
+    } finally {
 
-  }
-};
+      setLoading(false);
+
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-96"
-      >
+    <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center px-6">
 
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          Login
-        </h1>
+      <div className="w-full max-w-6xl grid lg:grid-cols-2 bg-white rounded-[4xl] overflow-hidden shadow-xl border border-gray-100">
 
-        {/* Email */}
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="border p-3 w-full mb-4 rounded"
-          required
-        />
+        {/* Left Side */}
+        <div className="hidden lg:flex flex-col justify-between bg-black text-white p-14">
 
-        {/* Password */}
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="border p-3 w-full mb-4 rounded"
-          required
-        />
+          <div>
 
-        {/* Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-500 hover:bg-blue-600 text-white w-full py-3 rounded"
-        >
-          {loading
-            ? "Logging in..."
-            : "Login"}
-        </button>
+            <h1 className="text-4xl font-bold leading-tight">
 
-        {/* Register Link */}
-        <p className="mt-4 text-center">
+              Welcome back to
+              <br />
 
-          No account?{" "}
+              TaskFlow
 
-          <Link
-            to="/register"
-            className="text-blue-500"
+            </h1>
+
+            <p className="text-gray-400 mt-6 text-lg leading-relaxed">
+
+              Manage your productivity,
+              organize tasks, and stay focused
+              with a modern workflow experience.
+
+            </p>
+
+          </div>
+
+          <div className="space-y-6">
+
+            <div className="border border-white/10 rounded-2xl p-5 bg-white/5 backdrop-blur">
+
+              <p className="text-sm text-gray-400 mb-2">
+                Productivity
+              </p>
+
+              <h3 className="text-2xl font-semibold">
+                Simplified task management
+              </h3>
+
+            </div>
+
+            <div className="border border-white/10 rounded-2xl p-5 bg-white/5 backdrop-blur">
+
+              <p className="text-sm text-gray-400 mb-2">
+                Dashboard
+              </p>
+
+              <h3 className="text-2xl font-semibold">
+                Clean & modern experience
+              </h3>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* Right Side */}
+        <div className="p-8 md:p-14 flex flex-col justify-center">
+
+          <div className="mb-10">
+
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-3">
+              Login
+            </p>
+
+            <h2 className="text-4xl font-bold text-gray-900">
+              Sign in to your account
+            </h2>
+
+            <p className="text-gray-500 mt-3 text-lg">
+              Continue managing your tasks efficiently.
+            </p>
+
+          </div>
+
+
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
           >
-            Register
-          </Link>
 
-        </p>
+            {/* Email */}
+            <div>
 
-      </form>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Email Address
+              </label>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border border-gray-200 bg-gray-50 rounded-2xl px-5 py-4 outline-none focus:border-black transition"
+                required
+              />
+
+            </div>
+
+
+            {/* Password */}
+            <div>
+
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Password
+              </label>
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full border border-gray-200 bg-gray-50 rounded-2xl px-5 py-4 outline-none focus:border-black transition"
+                required
+              />
+
+            </div>
+
+
+            {/* Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-black text-white py-4 rounded-2xl font-semibold hover:opacity-90 transition disabled:opacity-70"
+            >
+
+              {loading
+                ? "Signing in..."
+                : "Sign In"}
+
+            </button>
+
+          </form>
+
+
+          {/* Register Link */}
+          <p className="mt-8 text-gray-500 text-center">
+
+            Don’t have an account?
+            {" "}
+
+            <Link
+              to="/register"
+              className="text-black font-semibold hover:underline"
+            >
+              Create account
+            </Link>
+
+          </p>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
