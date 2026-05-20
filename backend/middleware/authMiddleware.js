@@ -5,37 +5,58 @@ const authMiddleware = (
   res,
   next
 ) => {
+
   try {
+
+    console.log(
+      "==============="
+    );
+
+    console.log(
+      "HEADERS:",
+      req.headers
+    );
 
     const authHeader =
       req.headers.authorization;
 
-    // No Authorization Header
+    console.log(
+      "AUTH HEADER:",
+      authHeader
+    );
+
     if (!authHeader) {
+
       return res.status(401).json({
-        message: "No token provided",
+        message:
+          "No token provided",
       });
+
     }
 
-    // Extract token from:
-    // "Bearer TOKEN"
     const token =
       authHeader.split(" ")[1];
 
-    // Invalid format
-    if (!token) {
-      return res.status(401).json({
-        message: "Invalid token format",
-      });
-    }
+    console.log(
+      "TOKEN:",
+      token
+    );
 
-    // Verify token
+    console.log(
+      "JWT_SECRET:",
+      process.env.JWT_SECRET
+    );
+
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
     );
 
-    // Save decoded user
+    console.log(
+      "DECODED:",
+      decoded
+    );
+
     req.user = decoded;
 
     next();
