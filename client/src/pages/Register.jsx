@@ -10,11 +10,14 @@ import API from "../services/api";
 function Register() {
   const navigate = useNavigate();
 
+  // Form State
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
 
+  // Loading State
   const [loading, setLoading] =
     useState(false);
 
@@ -34,10 +37,12 @@ function Register() {
     setLoading(true);
 
     try {
-      await API.post(
+      const response = await API.post(
         "/auth/register",
         formData
       );
+
+      console.log(response.data);
 
       alert(
         "Registration successful"
@@ -45,53 +50,71 @@ function Register() {
 
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log(
+        error.response?.data
+      );
 
-      alert("Registration failed");
+      alert(
+        error.response?.data
+          ?.message ||
+          "Registration failed"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-96"
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
 
+        {/* Title */}
         <h1 className="text-3xl font-bold mb-6 text-center">
           Register
         </h1>
 
-        {/* Email */}
+        {/* Name Input */}
+        <input
+          type="text"
+          name="name"
+          placeholder="Enter Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="border p-3 w-full mb-4 rounded outline-none focus:ring-2 focus:ring-green-400"
+          required
+        />
+
+        {/* Email Input */}
         <input
           type="email"
           name="email"
           placeholder="Enter Email"
           value={formData.email}
           onChange={handleChange}
-          className="border p-3 w-full mb-4 rounded"
+          className="border p-3 w-full mb-4 rounded outline-none focus:ring-2 focus:ring-green-400"
           required
         />
 
-        {/* Password */}
+        {/* Password Input */}
         <input
           type="password"
           name="password"
           placeholder="Enter Password"
           value={formData.password}
           onChange={handleChange}
-          className="border p-3 w-full mb-4 rounded"
+          className="border p-3 w-full mb-6 rounded outline-none focus:ring-2 focus:ring-green-400"
           required
         />
 
-        {/* Button */}
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className="bg-green-500 hover:bg-green-600 text-white w-full py-3 rounded"
+          className="bg-green-500 hover:bg-green-600 transition text-white w-full py-3 rounded font-semibold"
         >
           {loading
             ? "Registering..."
@@ -99,13 +122,13 @@ function Register() {
         </button>
 
         {/* Login Link */}
-        <p className="mt-4 text-center">
+        <p className="mt-4 text-center text-sm">
 
           Already have an account?{" "}
 
           <Link
             to="/"
-            className="text-blue-500"
+            className="text-blue-500 hover:underline"
           >
             Login
           </Link>

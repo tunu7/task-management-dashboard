@@ -28,32 +28,46 @@ function Login() {
 
   // Handle Login
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const res = await API.post(
-        "/auth/login",
-        formData
-      );
+  try {
 
-      // Save Token
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+    const res = await API.post(
+      "/auth/login",
+      formData
+    );
 
-      // Redirect
-      navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
+    // Save Token
+    localStorage.setItem(
+      "token",
+      res.data.token
+    );
 
-      alert("Invalid credentials");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Save User
+    localStorage.setItem(
+      "user",
+      JSON.stringify(res.data.user)
+    );
+
+    // Redirect
+    navigate("/dashboard");
+
+  } catch (error) {
+
+    console.log(
+      error.response?.data
+    );
+
+    alert("Invalid credentials");
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">

@@ -1,38 +1,65 @@
-const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-exports.register = async (req, res) => {
+const User = require("../models/User");
+
+
+// Register User
+const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    // Check Existing User
+    const userExists = await User.findOne({
+      email,
+    });
 
-    if (existingUser) {
+    if (userExists) {
       return res.status(400).json({
         message: "User already exists",
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hash Password
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
 
+    // Create User
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    res.status(201).json(user);
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-exports.login = async (req, res) => {
+
+// Login User
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    // Check User
+    const user = await User.findOne({
+      email,
+    });
 
     if (!user) {
       return res.status(400).json({
@@ -40,7 +67,11 @@ exports.login = async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Compare Password
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
 
     if (!isMatch) {
       return res.status(400).json({
@@ -48,6 +79,7 @@ exports.login = async (req, res) => {
       });
     }
 
+    // Generate Token
     const token = jwt.sign(
       {
         id: user._id,
@@ -58,11 +90,25 @@ exports.login = async (req, res) => {
       }
     );
 
-    res.json({
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
       token,
-      user,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
 };
