@@ -1,25 +1,49 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const helmet = require("helmet");
+const morgan = require("morgan");
 
 const connectDB = require("./config/db");
 
-// Load ENV Variables
+// Load ENV
 dotenv.config();
 
-// Connect Database
+// Validate ENV
+if (!process.env.MONGO_URI) {
+  throw new Error("MONGO_URI missing");
+}
+
+// Connect DB
 connectDB();
 
 const app = express();
 
+// Security Middleware
+app.use(helmet());
 
-// Middlewares
-app.use(cors());
+// Logger
+app.use(morgan("dev"));
 
+// CORS
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://task-management-dashboard-sand.vercel.app",
+    ],
+    credentials: true,
+  })
+);
+
+// Body Parser
 app.use(express.json());
 
-app.use(express.urlencoded({ extended: true }));
-
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 // Routes
 app.use(
@@ -32,14 +56,12 @@ app.use(
   require("./routes/taskRoutes")
 );
 
-
 // Home Route
 app.get("/", (req, res) => {
   res.send("API Running Successfully");
 });
 
-
-// 404 Route Handler
+// 404
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -47,9 +69,17 @@ app.use((req, res) => {
   });
 });
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
 
-// Server
-const PORT = process.env.PORT || 5005;
+  res.status(500).json({
+    success: false,
+    message:
+      err.message || "Server Error",
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(
