@@ -1,190 +1,229 @@
 # Task Management Dashboard
 
-A full-stack Task Management Dashboard built using the MERN Stack.
-
-## Features
-
-- User Authentication
-- JWT Authorization
-- Create Tasks
-- Edit Tasks
-- Delete Tasks
-- Protected Routes
-- Responsive UI
+A full-stack Task Management Dashboard built using the MERN Stack (MongoDB, Express.js, React.js, Node.js).
+This application allows users to register, login securely using JWT authentication, and manage tasks efficiently with a clean modern UI.
 
 ---
 
-# Tech Stack
+## Features
 
-## Frontend
-- ReactJS
-- React Router DOM
-- Axios
-- Tailwind CSS
+* User Authentication (Register & Login)
+* JWT-based Authorization
+* Protected Routes
+* Create Tasks
+* Update Tasks
+* Delete Tasks
+* Task Status Management
+* Priority Levels
+* Responsive UI
+* REST API Integration
+* MongoDB Database
+* Secure Password Hashing using bcrypt
+* Fully Deployed Frontend & Backend
 
-## Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT Authentication
-- bcryptjs
+---
+
+## Tech Stack
+
+### Frontend
+
+* React.js
+* React Router DOM
+* Axios
+* Tailwind CSS
+
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
+* bcryptjs
+
+### Deployment
+
+* Frontend: Vercel
+* Backend: Render
+* Database: MongoDB Atlas
 
 ---
 
 # Project Structure
 
 ```bash
-project/
+task-management-dashboard/
 │
-├── client/     # Frontend
-├── backend/    # Backend
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── server.js
+│   └── package.json
+│
+└── README.md
 ```
 
 ---
 
-# Installation Guide
+# Installation
 
-## 1. Clone Repository
+## Clone Repository
 
 ```bash
-git clone <your-github-repo-link>
+git clone https://github.com/tunu7/task-management-dashboard.git
 ```
 
 ---
 
 # Backend Setup
 
-## 2. Go To Backend Folder
+## Navigate to backend
 
 ```bash
 cd backend
 ```
 
----
-
-## 3. Install Dependencies
+## Install dependencies
 
 ```bash
 npm install
 ```
 
----
-
-## 4. Create .env File
-
-Create a `.env` file inside backend folder.
+## Create `.env`
 
 ```env
-PORT=5005
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_secret_key
+PORT=5005
 ```
 
----
-
-## 5. Start Backend Server
+## Run backend server
 
 ```bash
-npm run dev
-```
-
-OR
-
-```bash
-node server.js
-```
-
-Backend runs on:
-
-```bash
-http://localhost:5005
+npm start
 ```
 
 ---
 
 # Frontend Setup
 
-## 6. Go To Client Folder
+## Navigate to frontend
 
 ```bash
-cd client
+cd frontend
 ```
 
----
-
-## 7. Install Dependencies
+## Install dependencies
 
 ```bash
 npm install
 ```
 
----
+## Create `.env`
 
-## 8. Start Frontend
+```env
+VITE_API_URL=http://localhost:5005/api
+```
+
+## Run frontend
 
 ```bash
 npm run dev
 ```
 
-Frontend runs on:
-
-```bash
-http://localhost:5173
-```
-
 ---
 
-# API Endpoints
+# API Routes
 
-## Auth Routes
+## Authentication Routes
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Register User |
-| POST | /api/auth/login | Login User |
+| Method | Endpoint             | Description   |
+| ------ | -------------------- | ------------- |
+| POST   | `/api/auth/register` | Register User |
+| POST   | `/api/auth/login`    | Login User    |
 
 ---
 
 ## Task Routes
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/tasks | Get Tasks |
-| POST | /api/tasks | Create Task |
-| PUT | /api/tasks/:id | Update Task |
-| DELETE | /api/tasks/:id | Delete Task |
+| Method | Endpoint         | Description   |
+| ------ | ---------------- | ------------- |
+| GET    | `/api/tasks`     | Get All Tasks |
+| POST   | `/api/tasks`     | Create Task   |
+| PUT    | `/api/tasks/:id` | Update Task   |
+| DELETE | `/api/tasks/:id` | Delete Task   |
 
 ---
 
-# Environment Variables
+# Authentication
 
-| Variable | Description |
-|----------|-------------|
-| PORT | Backend Port |
-| MONGO_URI | MongoDB Connection String |
-| JWT_SECRET | Secret Key For JWT |
+This project uses JWT (JSON Web Tokens) for secure authentication.
+
+Protected routes require:
+
+```bash
+Authorization: Bearer <token>
+```
 
 ---
 
 # Deployment
 
-## Frontend
-Deploy frontend using:
-- Vercel
-- Netlify
+## Frontend Deployment
 
-## Backend
-Deploy backend using:
-- Render
-- Railway
+Deployed on Vercel.
+
+## Backend Deployment
+
+Deployed on Render.
 
 ## Database
-Use:
-- MongoDB Atlas
+
+MongoDB Atlas Cloud Database.
+
+---
+
+
+# Future Improvements
+
+* Task Categories
+* Dark Mode
+* Drag & Drop Tasks
+* Notifications
+* Team Collaboration
+* Pagination
+* Role-Based Access
+
+---
+
+# Learning Outcomes
+
+This project helped in learning:
+
+* Full-stack MERN development
+* REST API architecture
+* Authentication & Authorization
+* MongoDB database integration
+* Deployment workflows
+* State management
+* Frontend-backend communication
+* Production debugging
 
 ---
 
 # Author
 
 Tunu Doley
+
+GitHub: https://github.com/tunu7
+
+---
+
