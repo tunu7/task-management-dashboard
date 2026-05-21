@@ -1,16 +1,21 @@
+// TaskForm.jsx
+
 import { useState } from "react";
 import API from "../services/api";
 
-function TaskForm({ fetchTasks }) {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    priority: "Low",
-    dueDate: "",
-    status: "Pending",
-  });
+function TaskForm({ addTask }) {
+
+  const [formData, setFormData] =
+    useState({
+      title: "",
+      description: "",
+      priority: "Low",
+      dueDate: "",
+      status: "Pending",
+    });
 
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -18,10 +23,18 @@ function TaskForm({ fetchTasks }) {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
-      await API.post("/tasks", formData);
+
+      const res =
+        await API.post(
+          "/tasks",
+          formData
+        );
+
+      addTask(res.data);
 
       setFormData({
         title: "",
@@ -31,49 +44,108 @@ function TaskForm({ fetchTasks }) {
         status: "Pending",
       });
 
-      fetchTasks();
     } catch (error) {
+
       console.log(error);
+
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-4 rounded shadow mb-6"
-    >
 
-      <h2 className="text-xl font-bold mb-4">
-        Create Task
-      </h2>
+    <form onSubmit={handleSubmit}>
+
+      <div className="mb-8">
+
+        <h2 className="
+          text-3xl
+          font-bold
+          text-slate-900
+        ">
+          Create Task
+        </h2>
+
+        <p className="
+          text-slate-500
+          mt-2
+        ">
+          Add a new task to your workflow.
+        </p>
+
+      </div>
 
       <input
         type="text"
         name="title"
-        placeholder="Title"
+        placeholder="Task Title"
         value={formData.title}
         onChange={handleChange}
-        className="border p-2 w-full mb-3"
         required
+        className="
+          w-full
+          border
+          border-slate-200
+          bg-slate-50
+          rounded-2xl
+          px-4
+          py-3
+          outline-none
+          focus:ring-2
+          focus:ring-blue-500
+          transition-all
+          duration-300
+          mb-4
+        "
       />
 
       <textarea
         name="description"
-        placeholder="Description"
+        placeholder="Task Description"
         value={formData.description}
         onChange={handleChange}
-        className="border p-2 w-full mb-3"
+        rows="5"
+        className="
+          w-full
+          border
+          border-slate-200
+          bg-slate-50
+          rounded-2xl
+          px-4
+          py-3
+          outline-none
+          focus:ring-2
+          focus:ring-blue-500
+          transition-all
+          duration-300
+          mb-4
+        "
       />
 
       <select
         name="priority"
         value={formData.priority}
         onChange={handleChange}
-        className="border p-2 w-full mb-3"
+        className="
+          w-full
+          border
+          border-slate-200
+          bg-slate-50
+          rounded-2xl
+          px-4
+          py-3
+          outline-none
+          focus:ring-2
+          focus:ring-blue-500
+          transition-all
+          duration-300
+          mb-4
+        "
       >
+
         <option>Low</option>
         <option>Medium</option>
         <option>High</option>
+
       </select>
 
       <input
@@ -81,22 +153,41 @@ function TaskForm({ fetchTasks }) {
         name="dueDate"
         value={formData.dueDate}
         onChange={handleChange}
-        className="border p-2 w-full mb-3"
+        className="
+          w-full
+          border
+          border-slate-200
+          bg-slate-50
+          rounded-2xl
+          px-4
+          py-3
+          outline-none
+          focus:ring-2
+          focus:ring-blue-500
+          transition-all
+          duration-300
+          mb-4
+        "
       />
 
-      <select
-        name="status"
-        value={formData.status}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
+      <button
+        className="
+          w-full
+          bg-blue-600
+          hover:bg-blue-700
+          text-white
+          font-semibold
+          py-3
+          rounded-2xl
+          transition-all
+          duration-300
+          shadow-lg
+          hover:shadow-xl
+        "
       >
-        <option>Pending</option>
-        <option>Completed</option>
-      </select>
-
-      <button className="bg-blue-500 text-white px-4 py-2 rounded">
         Add Task
       </button>
+
     </form>
   );
 }

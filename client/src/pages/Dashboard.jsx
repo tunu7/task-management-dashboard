@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+// Dashboard.jsx
+
+import { useEffect, useMemo, useState } from "react";
 
 import Navbar from "../components/Navbar";
 import TaskForm from "../components/TaskForm";
@@ -9,6 +11,7 @@ import API from "../services/api";
 function Dashboard() {
 
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [user] = useState(() => {
 
@@ -28,10 +31,7 @@ function Dashboard() {
 
     } catch (error) {
 
-      console.log(
-        "User Parse Error:",
-        error
-      );
+      console.log(error);
 
       return null;
     }
@@ -52,6 +52,10 @@ function Dashboard() {
 
         console.log(error);
 
+      } finally {
+
+        setLoading(false);
+
       }
     };
 
@@ -59,67 +63,121 @@ function Dashboard() {
 
   }, []);
 
-  const fetchTasks = async () => {
+  // ADD TASK
+  const addTask = (newTask) => {
 
-    try {
-
-      const res =
-        await API.get("/tasks");
-
-      setTasks(res.data);
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
+    setTasks((prev) => [
+      newTask,
+      ...prev,
+    ]);
   };
 
-  const deleteTask = async (id) => {
+  // UPDATE TASK
+  const updateTask = (updatedTask) => {
 
-    try {
-
-      await API.delete(`/tasks/${id}`);
-
-      setTasks((prevTasks) =>
-        prevTasks.filter(
-          (task) => task._id !== id
-        )
-      );
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
+    setTasks((prev) =>
+      prev.map((task) =>
+        task._id === updatedTask._id
+          ? updatedTask
+          : task
+      )
+    );
   };
 
-  const completedTasks = tasks.filter(
-    (task) => task.status === "Completed"
+  // REMOVE TASK
+  const removeTask = (id) => {
+
+    setTasks((prev) =>
+      prev.filter(
+        (task) => task._id !== id
+      )
+    );
+  };
+
+  const completedTasks = useMemo(
+    () =>
+      tasks.filter(
+        (task) =>
+          task.status === "Completed"
+      ),
+    [tasks]
   );
 
-  const pendingTasks = tasks.filter(
-    (task) => task.status === "Pending"
+  const pendingTasks = useMemo(
+    () =>
+      tasks.filter(
+        (task) =>
+          task.status === "Pending"
+      ),
+    [tasks]
   );
+
+  if (loading) {
+
+    return (
+
+      <div className="
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        bg-slate-100
+      ">
+
+        <h1 className="text-2xl font-semibold text-slate-700">
+          Loading Tasks...
+        </h1>
+
+      </div>
+    );
+  }
 
   return (
 
-    <div className="min-h-screen bg-[#f5f7fb]">
+    <div className="
+      min-h-screen
+      bg-linear-to-br
+      from-slate-50
+      to-slate-100
+    ">
 
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="
+        max-w-400
+        mx-auto
+        px-8
+        py-10
+      ">
 
-        {/* Welcome Section */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
+        {/* HEADER */}
+        <div className="
+          flex
+          flex-col
+          md:flex-row
+          md:items-center
+          md:justify-between
+          mb-10
+        ">
 
           <div>
 
-            <p className="text-sm text-gray-500 uppercase tracking-widest">
-              Dashboard
+            <p className="
+              text-sm
+              uppercase
+              tracking-[0.3em]
+              text-blue-600
+              font-semibold
+            ">
+              Productivity Dashboard
             </p>
 
-            <h1 className="text-4xl font-bold text-gray-900 mt-2">
+            <h1 className="
+              text-5xl
+              font-bold
+              text-slate-900
+              mt-3
+            ">
 
               Welcome back,
               {" "}
@@ -130,52 +188,115 @@ function Dashboard() {
 
             </h1>
 
-            <p className="text-gray-500 mt-3 text-lg">
-              Stay productive and manage your tasks efficiently.
+            <p className="
+              text-slate-500
+              mt-4
+              text-lg
+            ">
+              Manage your tasks and stay productive.
             </p>
 
           </div>
 
         </div>
 
+        {/* STATS */}
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-3
+          gap-6
+          mb-10
+        ">
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {/* TOTAL */}
+          <div className="
+            bg-white
+            rounded-3xl
+            p-7
+            shadow-lg
+            border
+            border-slate-200
+            hover:shadow-2xl
+            transition-all
+            duration-300
+          ">
 
-          {/* Total */}
-          <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition">
-
-            <p className="text-gray-500 text-sm">
+            <p className="
+              text-slate-500
+              font-medium
+            ">
               Total Tasks
             </p>
 
-            <h2 className="text-4xl font-bold text-gray-900 mt-4">
+            <h2 className="
+              text-5xl
+              font-bold
+              text-slate-900
+              mt-4
+            ">
               {tasks.length}
             </h2>
 
           </div>
 
-          {/* Completed */}
-          <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition">
+          {/* COMPLETED */}
+          <div className="
+            bg-white
+            rounded-3xl
+            p-7
+            shadow-lg
+            border
+            border-slate-200
+            hover:shadow-2xl
+            transition-all
+            duration-300
+          ">
 
-            <p className="text-gray-500 text-sm">
+            <p className="
+              text-slate-500
+              font-medium
+            ">
               Completed
             </p>
 
-            <h2 className="text-4xl font-bold text-green-600 mt-4">
+            <h2 className="
+              text-5xl
+              font-bold
+              text-green-600
+              mt-4
+            ">
               {completedTasks.length}
             </h2>
 
           </div>
 
-          {/* Pending */}
-          <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition">
+          {/* PENDING */}
+          <div className="
+            bg-white
+            rounded-3xl
+            p-7
+            shadow-lg
+            border
+            border-slate-200
+            hover:shadow-2xl
+            transition-all
+            duration-300
+          ">
 
-            <p className="text-gray-500 text-sm">
+            <p className="
+              text-slate-500
+              font-medium
+            ">
               Pending
             </p>
 
-            <h2 className="text-4xl font-bold text-orange-500 mt-4">
+            <h2 className="
+              text-5xl
+              font-bold
+              text-orange-500
+              mt-4
+            ">
               {pendingTasks.length}
             </h2>
 
@@ -183,78 +304,111 @@ function Dashboard() {
 
         </div>
 
+        {/* MAIN SECTION */}
+        <div className="
+          grid
+          grid-cols-1
+          xl:grid-cols-3
+          gap-8
+        ">
 
-        {/* Task Form Section */}
-        <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm mb-10">
+          {/* LEFT SIDE */}
+          <div className="xl:col-span-1">
 
-          <div className="mb-6">
+            <div className="
+              bg-white
+              rounded-3xl
+              border
+              border-slate-200
+              shadow-xl
+              p-8
+              sticky
+              top-24
+            ">
 
-            <h2 className="text-2xl font-semibold text-gray-900">
-              Create New Task
-            </h2>
+              <TaskForm addTask={addTask} />
 
-            <p className="text-gray-500 mt-1">
-              Organize your workflow efficiently
-            </p>
+            </div>
 
           </div>
 
-          <TaskForm fetchTasks={fetchTasks} />
+          {/* RIGHT SIDE */}
+          <div className="xl:col-span-2">
 
-        </div>
+            <div className="mb-6">
 
-
-        {/* Tasks */}
-        <div>
-
-          <div className="flex items-center justify-between mb-6">
-
-            <div>
-
-              <h2 className="text-2xl font-semibold text-gray-900">
+              <h2 className="
+                text-3xl
+                font-bold
+                text-slate-900
+              ">
                 Your Tasks
               </h2>
 
-              <p className="text-gray-500 mt-1">
-                Manage and track your progress
+              <p className="
+                text-slate-500
+                mt-2
+              ">
+                Organize and manage your workflow efficiently.
               </p>
 
             </div>
+
+            {tasks.length > 0 ? (
+
+              <div className="
+                grid
+                grid-cols-1
+                lg:grid-cols-2
+                2xl:grid-cols-3
+                gap-6
+              ">
+
+                {tasks.map((task) => (
+
+                  <TaskCard
+                    key={task._id}
+                    task={task}
+                    updateTask={updateTask}
+                    removeTask={removeTask}
+                  />
+
+                ))}
+
+              </div>
+
+            ) : (
+
+              <div className="
+                bg-white
+                rounded-3xl
+                border-2
+                border-dashed
+                border-slate-300
+                p-20
+                text-center
+              ">
+
+                <h3 className="
+                  text-3xl
+                  font-semibold
+                  text-slate-700
+                ">
+                  No Tasks Yet
+                </h3>
+
+                <p className="
+                  text-slate-500
+                  mt-3
+                ">
+                  Start by creating your first task.
+                </p>
+
+              </div>
+
+            )}
 
           </div>
-
-          {tasks.length > 0 ? (
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              {tasks.map((task) => (
-
-                <TaskCard
-                  key={task._id}
-                  task={task}
-                  fetchTasks={fetchTasks}
-                  deleteTask={deleteTask}
-                />
-
-              ))}
-
-            </div>
-
-          ) : (
-
-            <div className="bg-white rounded-3xl border border-dashed border-gray-300 p-16 text-center">
-
-              <h3 className="text-xl font-semibold text-gray-700">
-                No Tasks Yet
-              </h3>
-
-              <p className="text-gray-500 mt-2">
-                Start by creating your first task.
-              </p>
-
-            </div>
-
-          )}
 
         </div>
 
